@@ -132,9 +132,8 @@ private:
     return words;
   }
 
-  static inline double CalculateIdf(double documents_count,
-    double count_documents_contain_word) {
-    return log(documents_count / count_documents_contain_word);
+  inline double CalculateIdf(const string &word) const {
+    return log(document_count_ / word_to_document_freqs_.at(word).size());
   }
 
   vector<Document> FindAllDocuments(const Query &query_words) const {
@@ -143,8 +142,7 @@ private:
 
     for (const auto &word : query_words.plus_words) {
       if (word_to_document_freqs_.find(word) != word_to_document_freqs_.end()) {
-        double idf = CalculateIdf(document_count_,
-          word_to_document_freqs_.at(word).size());
+        const double idf = CalculateIdf(word);
         for (const auto &[id, tf] : word_to_document_freqs_.at(word)) {
           id_relevance[id] += tf * idf;
         }
