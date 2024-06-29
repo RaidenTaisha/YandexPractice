@@ -83,11 +83,13 @@ class SearchServer {
     sort(matched_documents.begin(),
          matched_documents.end(),
          [](const Document &lhs, const Document &rhs) {
+           bool ret;
            if (abs(lhs.relevance - rhs.relevance) < numeric_limits<double>::epsilon()) {
-             return lhs.rating > rhs.rating;
+             ret = lhs.rating > rhs.rating;
            } else {
-             return lhs.relevance > rhs.relevance;
+             ret = lhs.relevance > rhs.relevance;
            }
+           return ret;
          });
     if (matched_documents.size() > MAX_RESULT_DOCUMENT_COUNT) {
       matched_documents.resize(MAX_RESULT_DOCUMENT_COUNT);
