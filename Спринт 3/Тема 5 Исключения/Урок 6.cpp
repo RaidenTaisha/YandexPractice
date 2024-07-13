@@ -80,8 +80,10 @@ class SearchServer {
   template <typename StringContainer>
   explicit SearchServer(const StringContainer& stop_words)
       : stop_words_(MakeUniqueNonEmptyStrings(stop_words)) {
-    if (any_of(stop_words.begin(), stop_words.end(), CheckIncorrectInput)) {
-      throw invalid_argument("incorrect stop word: ");
+    for (const auto &word : stop_words_) {
+      if (!IsValidWord(word)) {
+        throw invalid_argument("incorrect stop word"s);
+      }
     }
   }
 
@@ -95,8 +97,10 @@ class SearchServer {
     }
     const vector<string> words = SplitIntoWordsNoStop(document);
     const double inv_word_count = 1.0 / words.size();
-    if (any_of(words.begin(), words.end(), CheckIncorrectInput)) {
-      throw invalid_argument("incorrect word in AddDocument: ");
+    for (const auto &word : stop_words_) {
+      if (!IsValidWord(word)) {
+        throw invalid_argument("incorrect word in AddDocument"s);
+      }
     }
     for (const string& word : words) {
       word_to_document_freqs_[word][document_id] += inv_word_count;
@@ -194,23 +198,10 @@ class SearchServer {
     return words;
   }
 
-  [[nodiscard]] static bool CheckIncorrectInput(const string& word) {
-    if ((word.find("--"s) != -1) || (word == "-"s)) {
-      return true;
-    }
-    const auto index_tilda = word.find('-');
-    if (index_tilda != 0) {
-      if (index_tilda+1 == word.size() or (index_tilda+1 < word.size() && (word[index_tilda+1] == ' '))) {
-        return true;
-      }
-    }
-
-    if (any_of(word.cbegin(), word.cend(), [](char c){
+  [[nodiscard]] static bool IsValidWord(const string& word) {
+    return none_of(word.begin(), word.end(), [](char c) {
       return c >= 0 && c <= 31;
-    })) {
-      return true;
-    }
-    return false;
+    });
   }
 
   static int ComputeAverageRating(const vector<int>& ratings) {
@@ -229,15 +220,22 @@ class SearchServer {
   };
 
   [[nodiscard]] QueryWord ParseQueryWord(string text) const {
-    if (CheckIncorrectInput(text)) {
-      throw invalid_argument("incorrect raw query: " + text);
+    bool is_minus = false;
+
+    if (text.empty()) {
+      throw invalid_argument("word is empty"s);
     }
 
-    bool is_minus = false;
     if (text[0] == '-') {
-      is_minus = true;
       text = text.substr(1);
+      is_minus = true;
     }
+
+    if (text.empty() || text[0] == '-' || !IsValidWord(text)
+        || (text.find("- ") != string::npos)) {
+      throw invalid_argument("incorrect raw query: ");
+    }
+
     return {text, is_minus, IsStopWord(text)};
   }
 
