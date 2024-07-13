@@ -86,15 +86,7 @@ class SearchServer {
   }
 
   explicit SearchServer(const string& stop_words_text)
-      : SearchServer(
-      SplitIntoWords(stop_words_text))  // Invoke delegating constructor from string container
-  {
-    for (const auto& stop_word : SplitIntoWords(stop_words_text)) {
-      if (CheckIncorrectInput(stop_word)) {
-        throw invalid_argument("incorrect stop word: " + stop_word);
-      }
-    }
-  }
+      : SearchServer(SplitIntoWords(stop_words_text)) {}
 
   void AddDocument(int document_id, const string& document, DocumentStatus status,
                    const vector<int>& ratings) {
@@ -175,10 +167,7 @@ class SearchServer {
   }
 
   [[nodiscard]] int GetDocumentId(int index) const {
-    if (document_index_.count(index)) {
-      return document_index_.at(index);
-    }
-    throw out_of_range("not found in GetDocumentId index " + to_string(index));
+    return document_index_.at(index);
   }
 
  private:
