@@ -2,9 +2,9 @@
 #include <cmath>
 #include <iostream>
 #include <map>
+#include <numeric>
 #include <set>
 #include <vector>
-#include <numeric>
 
 using namespace std;
 
@@ -80,10 +80,8 @@ class SearchServer {
   template <typename StringContainer>
   explicit SearchServer(const StringContainer& stop_words)
       : stop_words_(MakeUniqueNonEmptyStrings(stop_words)) {
-    for (const auto& stop_word : stop_words) {
-      if (CheckIncorrectInput(stop_word)) {
-        throw invalid_argument("incorrect stop word: " + stop_word);
-      }
+    if (any_of(stop_words.begin(), stop_words.end(), CheckIncorrectInput)) {
+      throw invalid_argument("incorrect stop word: ");
     }
   }
 
@@ -105,10 +103,10 @@ class SearchServer {
     }
     const vector<string> words = SplitIntoWordsNoStop(document);
     const double inv_word_count = 1.0 / words.size();
+    if (any_of(words.begin(), words.end(), CheckIncorrectInput)) {
+      throw invalid_argument("incorrect word in AddDocument: ");
+    }
     for (const string& word : words) {
-      if (CheckIncorrectInput(word)) {
-        throw invalid_argument("incorrect word in AddDocument: " + word);
-      }
       word_to_document_freqs_[word][document_id] += inv_word_count;
     }
     documents_.emplace(document_id, DocumentData{ComputeAverageRating(ratings), status});
@@ -237,9 +235,7 @@ class SearchServer {
       return 0;
     }
     int rating_sum = 0;
-    for (const int rating : ratings) {
-      rating_sum += rating;
-    }
+    accumulate(ratings.begin(), ratings.end(), rating_sum);
     return rating_sum / static_cast<int>(ratings.size());
   }
 
