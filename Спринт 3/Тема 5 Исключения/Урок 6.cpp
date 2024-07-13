@@ -121,9 +121,6 @@ class SearchServer {
   template <typename DocumentPredicate>
   [[nodiscard]] vector<Document> FindTopDocuments(const string& raw_query,
                                                   DocumentPredicate document_predicate) const {
-    if (CheckIncorrectInput(raw_query)) {
-      throw invalid_argument("incorrect raw query: " + raw_query);
-    }
     const Query query = ParseQuery(raw_query);
     auto matched_documents = FindAllDocuments(query, document_predicate);
 
@@ -155,9 +152,6 @@ class SearchServer {
 
   [[nodiscard]] tuple<vector<string>, DocumentStatus> MatchDocument(const string& raw_query,
                                                                     int document_id) const {
-    if (CheckIncorrectInput(raw_query)) {
-      throw invalid_argument("incorrect raw query: " + raw_query);
-    }
     const Query query = ParseQuery(raw_query);
     vector<string> matched_words;
     for (const string& word : query.plus_words) {
@@ -246,6 +240,10 @@ class SearchServer {
   };
 
   [[nodiscard]] QueryWord ParseQueryWord(string text) const {
+    if (CheckIncorrectInput(text)) {
+      throw invalid_argument("incorrect raw query: " + text);
+    }
+
     bool is_minus = false;
     if (text[0] == '-') {
       is_minus = true;
