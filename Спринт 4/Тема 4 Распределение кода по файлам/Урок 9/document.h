@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ostream>
+
 struct Document {
   Document() = default;
   Document(int id, double relevance, int rating);
@@ -8,3 +10,5 @@ struct Document {
   double relevance = 0.0;
   int rating = 0;
 };
+
+std::ostream& operator<<(std::ostream& out, const Document& document);
