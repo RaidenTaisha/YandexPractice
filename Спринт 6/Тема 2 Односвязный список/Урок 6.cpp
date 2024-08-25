@@ -89,12 +89,7 @@ class SingleLinkedList {
   }
 
   [[nodiscard]] Iterator end() noexcept {
-    Node *x = head_.next_node;
-    while (x != nullptr) {
-      Node *y = x->next_node;
-      x = y;
-    }
-    return Iterator(x);
+    return Iterator(LastNode()->next_node);
   }
 
   [[nodiscard]] ConstIterator cbegin() const noexcept {
@@ -106,12 +101,7 @@ class SingleLinkedList {
   }
 
   [[nodiscard]] ConstIterator cend() const noexcept {
-    Node *x = head_.next_node;
-    while (x != nullptr) {
-      Node *y = x->next_node;
-      x = y;
-    }
-    return ConstIterator(x);
+    return ConstIterator(LastNode()->next_node);
   }
 
   [[nodiscard]] ConstIterator end() const noexcept {
@@ -235,6 +225,15 @@ class SingleLinkedList {
       temp_list.PushFront(*it);
     }
     swap(temp_list);
+  }
+
+  [[nodiscard]] Node *LastNode() const {
+    Node *node = head_.next_node;
+    while (node->next_node != nullptr) {
+      Node *y = node->next_node;
+      node = y;
+    }
+    return node;
   }
 
   // Фиктивный узел, используется для вставки "перед первым элементом"
