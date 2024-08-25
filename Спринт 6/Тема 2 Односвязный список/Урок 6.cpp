@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <initializer_list>
 #include <iterator>
+#include <list>
 #include <string>
 #include <utility>
 
@@ -205,25 +206,12 @@ class SingleLinkedList {
   }
 
   SingleLinkedList(std::initializer_list<Type> values) {
-    SingleLinkedList tmp;
-    Node *begin = &tmp.head_;
-    for (Type i : values) {
-      begin->next_node = new Node(i, nullptr);
-      begin = begin->next_node;
-    }
-    tmp.size_ = values.size();
-    swap(tmp);
+    CreateList(values);
   }
 
   SingleLinkedList(const SingleLinkedList &other) {
-    SingleLinkedList tmp;
-    Node *begin = &tmp.head_;
-    for (Type i : other) {
-      begin->next_node = new Node(i, nullptr);
-      begin = begin->next_node;
-    }
-    tmp.size_ = other.GetSize();
-    swap(tmp);
+    std::list<Type> list_with_reverse_iterators(other.begin(), other.end());
+    CreateList(list_with_reverse_iterators);
   }
 
   SingleLinkedList &operator=(const SingleLinkedList &rhs) {
@@ -240,6 +228,15 @@ class SingleLinkedList {
   }
 
  private:
+  template<typename List_>
+  void CreateList(List_ container) {
+    SingleLinkedList<Type> temp_list;
+    for (auto it = std::rbegin(container); it != std::rend(container); ++it) {
+      temp_list.PushFront(*it);
+    }
+    swap(temp_list);
+  }
+
   // Фиктивный узел, используется для вставки "перед первым элементом"
   Node head_;
   size_t size_ = 0;
