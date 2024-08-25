@@ -235,12 +235,8 @@ class SingleLinkedList {
   }
 
   void swap(SingleLinkedList &other) noexcept {
-    auto x = head_.next_node;
-    auto y = size_;
-    head_.next_node = other.head_.next_node;
-    size_ = other.size_;
-    other.head_.next_node = x;
-    other.size_ = y;
+    std::swap(head_.next_node, other.head_.next_node);
+    std::swap(size_, other.size_);
   }
 
  private:
