@@ -164,6 +164,8 @@ class SingleLinkedList {
   }
 
   void PopFront() noexcept {
+    if (head_.next_node == nullptr)
+      return;
     Node *buf = head_.next_node->next_node;
     delete head_.next_node;
     head_.next_node = buf;
