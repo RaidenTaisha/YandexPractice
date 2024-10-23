@@ -118,7 +118,9 @@ void InputReader::ApplyCommands(tc::TransportCatalogue& catalogue) const {
       catalogue.AddRoute(command.id, ParseRoute(command.description));
 }
 
-void InputReader::ReadCommands(std::istream& is, size_t count) {
+void InputReader::ReadCommands(std::istream& is) {
+  size_t count;
+  is >> count >> std::ws;
   for (size_t i = 0; i < count; ++i) {
     std::string line;
     getline(is, line);

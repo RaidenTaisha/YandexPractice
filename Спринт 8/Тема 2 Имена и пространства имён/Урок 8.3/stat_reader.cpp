@@ -45,7 +45,9 @@ void ParseAndPrintStat(const TransportCatalogue& catalogue, std::string_view req
     PrintStopStat(catalogue, id, output);
 }
 
-void ParseCommands(const tc::TransportCatalogue& catalogue, std::istream& is, size_t count) {
+void ParseCommands(const tc::TransportCatalogue& catalogue, std::istream& is) {
+  size_t count;
+  is >> count >> std::ws;
   for (size_t i = 0; i < count; ++i) {
     std::string line;
     getline(is, line);
