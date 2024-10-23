@@ -3,8 +3,8 @@
 #include "transport_catalogue.h"
 
 #include <algorithm>
-#include <cassert>
-#include <iterator>
+#include <string>
+#include <istream>
 
 /**
 * Парсит строку вида "10.123,  -30.1837" и возвращает пару координат (широта, долгота)
@@ -116,4 +116,12 @@ void InputReader::ApplyCommands(tc::TransportCatalogue& catalogue) const {
       catalogue.AddStop(command.id, ParseCoordinates(command.description));
     else if (command.command == "Bus")
       catalogue.AddRoute(command.id, ParseRoute(command.description));
+}
+
+void InputReader::ReadCommands(std::istream& is, size_t count) {
+  for (size_t i = 0; i < count; ++i) {
+    std::string line;
+    getline(is, line);
+    ParseLine(line);
+  }
 }

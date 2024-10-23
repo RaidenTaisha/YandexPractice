@@ -33,6 +33,11 @@ class InputReader {
 */
   void ApplyCommands(tc::TransportCatalogue& catalogue) const;
 
+/**
+* Парсит count строк из потока ввода в структуру CommandDescription и сохраняет результат в commands_
+*/
+  void ReadCommands(std::istream& is, size_t count);
+
  private:
   std::vector<CommandDescription> commands_;
 };

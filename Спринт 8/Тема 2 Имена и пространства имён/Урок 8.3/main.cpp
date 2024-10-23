@@ -15,11 +15,7 @@ int main() {
 
   {
     InputReader reader;
-    for (int i = 0; i < base_request_count; ++i) {
-      string line;
-      getline(cin, line);
-      reader.ParseLine(line);
-    }
+    reader.ReadCommands(cin, base_request_count);
     reader.ApplyCommands(catalogue);
   }
 
