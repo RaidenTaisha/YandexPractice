@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 
 #include "input_reader.h"
 #include "stat_reader.h"
@@ -21,9 +20,5 @@ int main() {
 
   int stat_request_count;
   cin >> stat_request_count >> ws;
-  for (int i = 0; i < stat_request_count; ++i) {
-    string line;
-    getline(cin, line);
-    ParseAndPrintStat(catalogue, line, cout);
-  }
+  ParseCommands(catalogue, cin, stat_request_count);
 }

@@ -1,6 +1,6 @@
 #include "stat_reader.h"
 
-#include <ostream>
+#include <string>
 
 using namespace tc;
 
@@ -22,7 +22,7 @@ void PrintStopStat(const TransportCatalogue& catalogue, const std::string_view i
   if (nullptr == stop) {
     output << "Stop " << id << ": not found";
   } else {
-    const auto names = catalogue.GetRoutes(id);
+    const auto &names = catalogue.GetRoutes(id);
     if (names.empty()) {
       output << "Stop " << id << ": no buses";
     } else {
@@ -45,3 +45,10 @@ void ParseAndPrintStat(const TransportCatalogue& catalogue, std::string_view req
     PrintStopStat(catalogue, id, output);
 }
 
+void ParseCommands(const tc::TransportCatalogue& catalogue, std::istream& is, size_t count) {
+  for (size_t i = 0; i < count; ++i) {
+    std::string line;
+    getline(is, line);
+    ParseAndPrintStat(catalogue, line, std::cout);
+  }
+}
