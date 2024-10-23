@@ -32,9 +32,9 @@ class TransportCatalogue {
   void AddStop(const std::string& name, const Coordinates& coordinates);
   void AddRoute(const std::string& name, const std::vector<std::string_view>& stops);
 
-  Route *GetRoute(const std::string_view& name) const;
-  Stop *GetStop(const std::string_view& name) const;
-  std::unordered_set<std::string_view> GetRoutes(const std::string_view& stop_name) const;
+  const Route *GetRoute(const std::string_view& name) const;
+  const Stop *GetStop(const std::string_view& name) const;
+  const std::unordered_set<std::string_view>& GetRoutes(const std::string_view& stop_name) const;
 
   RouteInfo GetRouteInfo(const std::string_view& name) const;
 
@@ -43,7 +43,7 @@ class TransportCatalogue {
   std::deque<Route> routes_;
   std::unordered_map<std::string_view, Stop *> stopname_to_stop_;
   std::unordered_map<std::string_view, Route *> routename_to_route_;
-  std::unordered_map<std::string_view, std::vector<Route *>> stopname_to_routes_;
+  std::unordered_map<std::string_view, std::unordered_set<std::string_view>> stopname_to_routenames_;
 };
 
 }

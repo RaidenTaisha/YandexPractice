@@ -21,27 +21,21 @@ void TransportCatalogue::AddRoute(const std::string& name, const std::vector<std
   routename_to_route_.insert({routes_.back().name_, &routes_.back()});
 
   for (const auto& stop : routes_.back().stops_)
-    stopname_to_routes_[stop->name_].push_back(&routes_.back());
+    stopname_to_routenames_[stop->name_].insert(routes_.back().name_);
 }
 
-Route *TransportCatalogue::GetRoute(const std::string_view& name) const {
+const Route *TransportCatalogue::GetRoute(const std::string_view& name) const {
   const auto it = routename_to_route_.find(name);
   return it == routename_to_route_.end() ? nullptr : it->second;
 }
 
-Stop *TransportCatalogue::GetStop(const std::string_view& name) const {
+const Stop *TransportCatalogue::GetStop(const std::string_view& name) const {
   const auto it = stopname_to_stop_.find(name);
   return it == stopname_to_stop_.end() ? nullptr : it->second;
 }
 
-std::unordered_set<std::string_view> TransportCatalogue::GetRoutes(const std::string_view& stop_name) const {
-  std::unordered_set<std::string_view> route_names;
-  const auto it = stopname_to_routes_.find(stop_name);
-  if (it != stopname_to_routes_.end())
-    for (const auto& route : it->second)
-      route_names.insert(route->name_);
-
-  return route_names;
+const std::unordered_set<std::string_view>& TransportCatalogue::GetRoutes(const std::string_view& stop_name) const {
+  return stopname_to_routenames_.at(stop_name);
 }
 
 size_t CountUniqueStops(const std::vector<Stop *>& stops) {
