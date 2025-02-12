@@ -1,0 +1,17 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ "RaidenTaisha-patch-1" ]
+  pull_request:
+    branches: [ "RaidenTaisha-patch-1" ]
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: test
+      run: echo "test"
